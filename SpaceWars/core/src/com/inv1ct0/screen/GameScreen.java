@@ -1,49 +1,48 @@
 package com.inv1ct0.screen;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.inv1ct0.base.BaseScreen;
 import com.inv1ct0.math.Rect;
 import com.inv1ct0.sprite.Background;
-import com.inv1ct0.sprite.ButtonExit;
-import com.inv1ct0.sprite.ButtonPlay;
+import com.inv1ct0.sprite.MainShip;
 import com.inv1ct0.sprite.Star;
 
-public class MenuScreen extends BaseScreen {
+public class GameScreen extends BaseScreen {
 
-    private static final int STAR_COUNT = 256;
-
-    private Game game;
-
+    private static final int STAR_COUNT = 128;
     private Texture bg;
     private TextureAtlas atlas;
 
-    private Background background;
     private Star[] stars;
-    private ButtonExit buttonExit;
-    private ButtonPlay buttonPlay;
+    private MainShip mainShip;
+//    private Texture ship;
+//    private Sprite region;
 
-    public MenuScreen(Game game) {
-        this.game = game;
-    }
+    private Background background;
 
     @Override
     public void show() {
         super.show();
         bg = new Texture("textures/bg.png");
         background = new Background(new TextureRegion(bg));
-        atlas = new TextureAtlas("textures/menuAtlas.tpack");
+        atlas = new TextureAtlas("textures/mainAtlas.tpack");
         stars = new Star[STAR_COUNT];
         for (int i = 0; i < STAR_COUNT; i++) {
             stars[i] = new Star(atlas);
         }
-        buttonExit = new ButtonExit(atlas);
-        buttonPlay = new ButtonPlay(atlas, game);
+
+        mainShip = new MainShip(atlas);
+        //TODO попытка разрезать корабль на две части
+//        ship = new Texture(Gdx.files.internal("textures/mainAtlas.png"));
+//        region = new Sprite(ship, 916,95, 195,287);
+//        region.setPosition(10,10);
+        mainShip.setHeightProportion(0.5f);
     }
 
     @Override
@@ -54,6 +53,15 @@ public class MenuScreen extends BaseScreen {
     }
 
     @Override
+    public void resize(Rect worldBounds) {
+        background.resize(worldBounds);
+        for (Star star : stars) {
+            star.resize(worldBounds);
+        }
+        mainShip.resize(worldBounds);
+    }
+
+    @Override
     public void dispose() {
         bg.dispose();
         atlas.dispose();
@@ -61,34 +69,32 @@ public class MenuScreen extends BaseScreen {
     }
 
     @Override
-    public void resize(Rect worldBounds) {
-        super.resize(worldBounds);
-        background.resize(worldBounds);
-        for (Star star : stars) {
-            star.resize(worldBounds);
-        }
-        buttonExit.resize(worldBounds);
-        buttonPlay.resize(worldBounds);
+    public boolean keyDown(int keycode) {
+        mainShip.keyDown(keycode);
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return super.keyUp(keycode);
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        buttonExit.touchDown(touch, pointer);
-        buttonPlay.touchDown(touch, pointer);
+        mainShip.touchDown(touch, pointer);
         return false;
     }
 
     @Override
     public boolean touchUp(Vector2 touch, int pointer) {
-        buttonExit.touchUp(touch, pointer);
-        buttonPlay.touchUp(touch, pointer);
-        return false;
+        return super.touchUp(touch, pointer);
     }
 
     private void update(float delta) {
         for (Star star : stars) {
             star.update(delta);
         }
+        mainShip.update(delta);
     }
 
     private void draw() {
@@ -96,11 +102,11 @@ public class MenuScreen extends BaseScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.begin();
         background.draw(batch);
+        mainShip.draw(batch);
+//        region.draw(batch);
         for (Star star : stars) {
             star.draw(batch);
         }
-        buttonExit.draw(batch);
-        buttonPlay.draw(batch);
         batch.end();
     }
 }
