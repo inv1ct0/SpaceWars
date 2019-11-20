@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.inv1ct0.math.Rect;
 
+
 public class Sprite extends Rect {
 
     protected float angle;
@@ -43,6 +44,12 @@ public class Sprite extends Rect {
 
     public void resize(Rect worldBounds) {
 
+    }
+
+    public boolean keyDown(int keycode) { return false; }
+
+    public boolean keyUp(int keycode) {
+        return false;
     }
 
     public boolean touchDown(Vector2 touch, int pointer) {
