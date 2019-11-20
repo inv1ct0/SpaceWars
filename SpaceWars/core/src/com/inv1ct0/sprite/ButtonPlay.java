@@ -6,6 +6,7 @@ import com.inv1ct0.base.ScaledTouchUpButton;
 import com.inv1ct0.math.Rect;
 import com.inv1ct0.screen.GameScreen;
 
+
 public class ButtonPlay extends ScaledTouchUpButton {
 
     private Game game;
