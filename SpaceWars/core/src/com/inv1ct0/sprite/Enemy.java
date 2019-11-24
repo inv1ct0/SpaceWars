@@ -9,6 +9,8 @@ import com.inv1ct0.pool.BulletPool;
 
 public class Enemy extends Ship {
 
+    private Vector2 startV = new Vector2(0, -0.2f);
+
     public Enemy(BulletPool bulletPool, Rect worldBounds) {
         this.bulletPool = bulletPool;
         this.worldBounds = worldBounds;
@@ -18,8 +20,11 @@ public class Enemy extends Ship {
     @Override
     public void update(float delta) {
         super.update(delta);
-        if (getBottom() < worldBounds.getBottom()) {
-            destroy();
+        if(getTop() <= worldBounds.getTop()) {
+            v.set(v0);
+            if (getBottom() < worldBounds.getBottom()) {
+                destroy();
+            }
         }
     }
 
@@ -42,9 +47,10 @@ public class Enemy extends Ship {
         this.bulletV.set(0, bulletVY);
         this.damage = damage;
         this.reloadInterval = reloadInterval;
+        this.reloadTimer = 2f;
         this.sound = sound;
         setHeightProportion(height);
         this.hp = hp;
-        this.v.set(v0);
+        this.v.set(startV);
     }
 }

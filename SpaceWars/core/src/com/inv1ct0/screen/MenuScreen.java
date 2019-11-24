@@ -2,7 +2,6 @@ package com.inv1ct0.screen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -15,7 +14,6 @@ import com.inv1ct0.sprite.ButtonExit;
 import com.inv1ct0.sprite.ButtonPlay;
 import com.inv1ct0.sprite.Star;
 
-
 public class MenuScreen extends BaseScreen {
 
     private static final int STAR_COUNT = 256;
@@ -24,8 +22,6 @@ public class MenuScreen extends BaseScreen {
 
     private Texture bg;
     private TextureAtlas atlas;
-
-    private Music music;
 
     private Background background;
     private Star[] stars;
@@ -39,7 +35,6 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void show() {
         super.show();
-        music = Gdx.audio.newMusic(Gdx.files.internal("sounds/music.mp3"));
         bg = new Texture("textures/bg.png");
         background = new Background(new TextureRegion(bg));
         atlas = new TextureAtlas("textures/menuAtlas.tpack");
@@ -49,8 +44,6 @@ public class MenuScreen extends BaseScreen {
         }
         buttonExit = new ButtonExit(atlas);
         buttonPlay = new ButtonPlay(atlas, game);
-        music.setLooping(true);
-        music.play();
     }
 
     @Override
@@ -63,7 +56,6 @@ public class MenuScreen extends BaseScreen {
     @Override
     public void dispose() {
         bg.dispose();
-        music.dispose();
         atlas.dispose();
         super.dispose();
     }

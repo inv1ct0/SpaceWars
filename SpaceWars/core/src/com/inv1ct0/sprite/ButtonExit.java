@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.inv1ct0.base.ScaledTouchUpButton;
 import com.inv1ct0.math.Rect;
 
-
 public class ButtonExit extends ScaledTouchUpButton {
 
     public ButtonExit(TextureAtlas atlas) {
