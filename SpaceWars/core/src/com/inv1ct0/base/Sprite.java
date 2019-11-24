@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.inv1ct0.math.Rect;
-
+import com.inv1ct0.utils.Regions;
 
 public class Sprite extends Rect {
 
@@ -12,6 +12,11 @@ public class Sprite extends Rect {
     protected float scale = 1f;
     protected TextureRegion[] regions;
     protected int frame;
+    protected boolean destroyed;
+
+    public Sprite() {
+
+    }
 
     public Sprite(TextureRegion region) {
         if (region == null) {
@@ -19,6 +24,13 @@ public class Sprite extends Rect {
         }
         regions = new TextureRegion[1];
         regions[0] = region;
+    }
+
+    public Sprite(TextureRegion region, int rows, int cols, int frames) {
+        if (region == null) {
+            throw new NullPointerException("region is null");
+        }
+        this.regions = Regions.split(region, rows, cols, frames);
     }
 
     public void draw(SpriteBatch batch) {
@@ -46,12 +58,6 @@ public class Sprite extends Rect {
 
     }
 
-    public boolean keyDown(int keycode) { return false; }
-
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
     public boolean touchDown(Vector2 touch, int pointer) {
         return false;
     }
@@ -74,5 +80,17 @@ public class Sprite extends Rect {
 
     public void setScale(float scale) {
         this.scale = scale;
+    }
+
+    public void destroy() {
+        destroyed = true;
+    }
+
+    public void flushDestroy() {
+        destroyed = false;
+    }
+
+    public boolean isDestroyed() {
+        return destroyed;
     }
 }

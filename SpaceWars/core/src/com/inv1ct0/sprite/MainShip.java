@@ -1,67 +1,145 @@
 package com.inv1ct0.sprite;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
-import com.inv1ct0.base.Sprite;
+import com.inv1ct0.base.Ship;
 import com.inv1ct0.math.Rect;
+import com.inv1ct0.pool.BulletPool;
 
-public class MainShip extends Sprite {
+public class MainShip extends Ship {
+
+    private static final float BOTTOM_MARGIN = 0.05f;
+    private static final int INVALID_POINTER = -1;
+
+    private boolean pressedLeft;
+    private boolean pressedRight;
+
+    private int leftPointer = INVALID_POINTER;
+    private int rightPointer = INVALID_POINTER;
 
 
-    private static final float V_LEN = 0.005f;
-    private Vector2 v = new Vector2();
-    private Vector2 endPoint = new Vector2();
-    private Vector2 buff = new Vector2();
+    public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
+        super(atlas.findRegion("main_ship"), 1, 2, 2);
+        this.bulletPool = bulletPool;
+        bulletRegion = atlas.findRegion("bulletMainShip");
+        sound = Gdx.audio.newSound(Gdx.files.internal("sounds/laser.wav"));
+        v0.set(0.5f, 0);
+        reloadInterval = 0.2f;
+        bulletHeight = 0.01f;
+        damage = 1;
+        bulletV.set(0, 0.5f);
+    }
 
-    public MainShip(TextureAtlas atlas) {
-        super(atlas.findRegion("main_ship"));
+    @Override
+    public void resize(Rect worldBounds) {
+        this.worldBounds = worldBounds;
+        setHeightProportion(0.15f);
+        setBottom(worldBounds.getBottom() + BOTTOM_MARGIN);
     }
 
     @Override
     public void update(float delta) {
-        buff.set(endPoint);
-        if(buff.sub(pos).len() > V_LEN) {
-            pos.add(v);
-        } else {
-            pos.set(endPoint);
+        super.update(delta);
+        if (getRight() > worldBounds.getRight()) {
+            setRight(worldBounds.getRight());
+            stop();
+        }
+        if (getLeft() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getLeft());
+            stop();
+        }
+    }
+
+    public void keyDown(int keycode) {
+        switch (keycode) {
+            case Input.Keys.D:
+            case Input.Keys.RIGHT:
+                moveRight();
+                pressedRight = true;
+                break;
+            case Input.Keys.A:
+            case Input.Keys.LEFT:
+                moveLeft();
+                pressedLeft = true;
+                break;
+            case Input.Keys.UP:
+                shoot();
+                break;
+        }
+    }
+
+    public void keyUp(int keycode) {
+        switch (keycode) {
+            case Input.Keys.D:
+            case Input.Keys.RIGHT:
+                pressedRight = false;
+                if (pressedLeft) {
+                    moveLeft();
+                } else {
+                    stop();
+                }
+                break;
+            case Input.Keys.A:
+            case Input.Keys.LEFT:
+                pressedLeft = false;
+                if (pressedRight) {
+                    moveRight();
+                } else {
+                    stop();
+                }
+                break;
         }
     }
 
     @Override
     public boolean touchDown(Vector2 touch, int pointer) {
-        endPoint.set(touch);
-        v.set(touch.cpy().sub(pos)).setLength(V_LEN);
-        return false;
-    }
-
-    //TODO попытка сделать управление с клавиатуры
-
-    @Override
-    public boolean keyDown(int keycode) {
-//        if(keycode == 21) {
-//            pos.x -= V_LEN;
-//        }
-//        if(keycode == 22) {
-//            pos.x += V_LEN;
-//        }
-//        if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
-//            pos.x -= 0.5 * Gdx.graphics.getDeltaTime();
-//        }
-//        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) {
-//            pos.x += 0.5 * Gdx.graphics.getDeltaTime();
-//        }
+        if (touch.x < worldBounds.pos.x) {
+            if (leftPointer != INVALID_POINTER) return false;
+            leftPointer = pointer;
+            moveLeft();
+        } else {
+            if (rightPointer != INVALID_POINTER) return false;
+            rightPointer = pointer;
+            moveRight();
+        }
         return false;
     }
 
     @Override
-    public boolean keyUp(int keycode) {
-        return super.keyUp(keycode);
+    public boolean touchUp(Vector2 touch, int pointer) {
+        if (pointer == leftPointer) {
+            leftPointer = INVALID_POINTER;
+            if (rightPointer != INVALID_POINTER) {
+                moveRight();
+            } else {
+                stop();
+            }
+        } else if (pointer == rightPointer) {
+            rightPointer = INVALID_POINTER;
+            if (leftPointer != INVALID_POINTER) {
+                moveLeft();
+            } else {
+                stop();
+            }
+        }
+        return false;
     }
 
-    @Override
-    public void resize(Rect worldBounds) {
-        setHeightProportion(0.18f);
-        setLeft(worldBounds.getLeft() + 0.05f);
-        setBottom(worldBounds.getBottom() + 0.05f);
+    public void dispose() {
+        sound.dispose();
+    }
+
+    private void moveRight() {
+        v.set(v0);
+    }
+
+    private void moveLeft() {
+        v.set(v0).rotate(180);
+    }
+
+    private void stop() {
+        v.setZero();
     }
 }

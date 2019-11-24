@@ -10,12 +10,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.inv1ct0.math.MatrixUtils;
 import com.inv1ct0.math.Rect;
 
-
 public class BaseScreen implements Screen, InputProcessor {
 
     protected SpriteBatch batch;
     private Rect screenBounds;
-    private Rect worldBounds;
+    protected Rect worldBounds;
     private Rect glBounds;
 
     private Matrix4 worldToGl;

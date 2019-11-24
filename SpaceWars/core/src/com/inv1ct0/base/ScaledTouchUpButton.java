@@ -28,7 +28,6 @@ public abstract class ScaledTouchUpButton extends Sprite {
         if (this.pointer != pointer || !pressed) {
             return false;
         }
-        //отпускает палец на том же месте
         if (isMe(touch)) {
             action();
         }
