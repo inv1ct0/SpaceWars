@@ -4,7 +4,6 @@ import com.inv1ct0.base.SpritesPool;
 import com.inv1ct0.math.Rect;
 import com.inv1ct0.sprite.Enemy;
 
-
 public class EnemyPool extends SpritesPool<Enemy> {
 
     private Rect worldBounds;

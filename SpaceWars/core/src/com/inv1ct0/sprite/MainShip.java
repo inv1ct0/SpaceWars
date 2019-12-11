@@ -19,7 +19,6 @@ public class MainShip extends Ship {
     private int leftPointer = INVALID_POINTER;
     private int rightPointer = INVALID_POINTER;
 
-
     public MainShip(TextureAtlas atlas, BulletPool bulletPool) {
         super(atlas.findRegion("main_ship"), 1, 2, 2);
         this.bulletPool = bulletPool;
@@ -29,6 +28,7 @@ public class MainShip extends Ship {
         reloadInterval = 0.2f;
         bulletHeight = 0.01f;
         damage = 1;
+        hp = 100;
         bulletV.set(0, 0.5f);
     }
 
@@ -142,4 +142,5 @@ public class MainShip extends Ship {
     private void stop() {
         v.setZero();
     }
+
 }
